@@ -45,4 +45,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.keymap.set('n', '\\', '<cmd>lua MiniFiles.open()<CR>')
 -- vim: ts=2 sts=2 sw=2 et
