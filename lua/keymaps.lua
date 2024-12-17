@@ -46,4 +46,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.keymap.set('n', '\\', '<cmd>lua MiniFiles.open()<CR>')
+
+vim.keymap.set({ 'n', 'v' }, '<leader>ia', '<cmd>ChatGPT<CR>', { desc = 'ChatGPT' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ie', '"<cmd>ChatGPTEditWithInstruction<CR>"', { desc = 'Edit with instruction' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ig', '<cmd>ChatGPTRun grammar_correction<CR>', { desc = 'Grammar Correction' })
+vim.keymap.set({ 'n', 'v' }, '<leader>id', '<cmd>ChatGPTRun docstring<CR>', { desc = 'Create Docstring' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ix', '<cmd>ChatGPTRun explain_code<CR>', { desc = 'Explain Code' })
+vim.keymap.set({ 'n', 'v' }, '<leader>if', '<cmd>ChatGPTRun fix_bugs<CR>', { desc = 'Fix Bugs' })
+vim.keymap.set({ 'n', 'v' }, '<leader>is', '<cmd>ChatGPTRun summarize<CR>', { desc = 'Summarize Text' })
+vim.keymap.set({ 'n', 'v' }, '<leader>il', '<cmd>ChatGPTRun code_readability_analysis<CR>', { desc = 'Code Readability Analysis' })
 -- vim: ts=2 sts=2 sw=2 et

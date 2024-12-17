@@ -146,7 +146,7 @@ function M.config()
     },
     openai_edit_params = {
       --model = "code-davinci-edit-001",
-      model = 'gpt-4',
+      model = 'gpt-4o',
       temperature = 0,
       top_p = 1,
       n = 1,
