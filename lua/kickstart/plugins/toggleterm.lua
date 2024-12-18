@@ -35,7 +35,19 @@ function M.config()
 
   function _G.set_terminal_keymaps()
     local opts = { noremap = true, silent = true }
+    local trim_spaces = true
     vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+
+    vim.keymap.set({ 'n', 'v' }, '<leader>ll', function()
+      require('toggleterm').send_lines_to_terminal('single_line', trim_spaces, { args = vim.v.count })
+    end, { desc = 'Send lines to terminal' })
+
+    vim.keymap.set('v', '<leader>lv', function()
+      require('toggleterm').send_lines_to_terminal('visual_lines', trim_spaces, { args = vim.v.count })
+    end, { desc = 'Send visual lines to terminal' })
+    vim.keymap.set('v', '<leader>ls', function()
+      require('toggleterm').send_lines_to_terminal('visual_selection', trim_spaces, { args = vim.v.count })
+    end, { desc = 'Send visual selection to terminal' })
     vim.api.nvim_buf_set_keymap(0, 't', '<c-h>', [[<C-\><C-n><C-W>h]], opts)
     vim.api.nvim_buf_set_keymap(0, 't', '<c-j>', [[<C-\><C-n><C-W>j]], opts)
     vim.api.nvim_buf_set_keymap(0, 't', '<c-k>', [[<C-\><C-n><C-W>k]], opts)
