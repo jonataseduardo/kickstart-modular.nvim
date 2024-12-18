@@ -64,6 +64,7 @@ return {
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>i', group = 'ChatGPT [I]a', mode = { 'n', 'v' } },
+        { '<leader>l', group = 'TermTogg[L]e', mode = { 'n', 'v' } },
       },
     },
   },
