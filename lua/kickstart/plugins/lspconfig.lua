@@ -176,10 +176,35 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local function get_python_path()
+        -- First check for VIRTUAL_ENV (Python venv)
+        local venv = os.getenv 'VIRTUAL_ENV'
+        if venv then
+          return venv .. '/bin/python'
+        end
+
+        -- Then check for CONDA_PREFIX (active Conda environment)
+        local conda = os.getenv 'CONDA_PREFIX'
+        if conda then
+          return conda .. '/bin/python'
+        end
+
+        -- Fallback to system Python
+        return vim.fn.exepath 'python3' or vim.fn.exepath 'python'
+      end
+
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {},
+        pyright = {
+
+          settings = {
+            python = {
+              pythonPath = get_python_path(),
+            },
+          },
+          --on_attach = on_attach, -- If you have an on_attach function
+        },
         bashls = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
