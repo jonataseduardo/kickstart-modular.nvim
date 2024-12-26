@@ -35,9 +35,9 @@ require('lazy').setup({
 
   require 'kickstart/plugins/cmp',
 
-  --require 'kickstart/plugins/tokyonight',
-
   require 'kickstart/plugins/kanagawa',
+
+  require 'kickstart/plugins/lualine',
 
   require 'kickstart/plugins/todo-comments',
 
