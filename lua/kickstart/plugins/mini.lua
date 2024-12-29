@@ -32,7 +32,7 @@ return {
       --   return '%2l:%-2v'
       -- end
 
-      require('mini.icons').setup()
+      require('mini.icons').setup { style = 'glyph' }
 
       require('mini.files').setup()
 
