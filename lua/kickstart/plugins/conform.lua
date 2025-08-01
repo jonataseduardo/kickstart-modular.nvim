@@ -43,9 +43,19 @@ return {
           'ruff_organize_imports',
         },
         sh = { 'shfmt' },
-
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- JSON formatting
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+        -- YAML formatting
+        yaml = { 'prettierd', 'prettier', stop_after_first = true },
+        yml = { 'prettierd', 'prettier', stop_after_first = true },
+        -- Markdown formatting
+        markdown = { 'prettierd', 'prettier', stop_after_first = true },
+        ['markdown.mdx'] = { 'prettierd', 'prettier', stop_after_first = true },
+        -- TOML formatting
+        toml = { 'taplo' },
       },
       formatters = {
         injected = { options = { ignore_errors = true } },
