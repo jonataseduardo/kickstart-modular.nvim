@@ -24,12 +24,25 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
+--  Enhanced for Ghostty terminal integration
 --
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Additional window management keymaps for Ghostty
+-- Resize windows (replaces tmux resize functionality)
+vim.keymap.set('n', '<A-h>', '<C-w><', { desc = 'Resize window left' })
+vim.keymap.set('n', '<A-j>', '<C-w>-', { desc = 'Resize window down' })
+vim.keymap.set('n', '<A-k>', '<C-w>+', { desc = 'Resize window up' })
+vim.keymap.set('n', '<A-l>', '<C-w>>', { desc = 'Resize window right' })
+
+-- Ghostty terminal specific keymaps
+-- Open terminal in current directory
+vim.keymap.set('n', '<leader>tt', '<cmd>terminal<CR>', { desc = 'Open terminal' })
+vim.keymap.set('n', '<leader>tf', '<cmd>terminal<CR>', { desc = 'Open terminal in current file directory' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`

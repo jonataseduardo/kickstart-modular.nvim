@@ -47,8 +47,6 @@ require('lazy').setup({
 
   require 'kickstart/plugins/toggleterm',
 
-  require 'kickstart/plugins/tmux',
-
   require 'kickstart/plugins/fugitive',
 
   require 'kickstart/plugins/chatgpt',
