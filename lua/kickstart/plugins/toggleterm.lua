@@ -36,8 +36,11 @@ function M.config()
   function _G.set_terminal_keymaps()
     local opts = { noremap = true, silent = true }
     local trim_spaces = false
+    
+    -- Exit terminal mode
     vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
 
+    -- Send lines to terminal functionality
     vim.keymap.set({ 'n', 'v' }, '<leader>ll', function()
       require('toggleterm').send_lines_to_terminal('single_line', trim_spaces, { args = vim.v.count, trim_spaces = trim_spaces })
     end, { desc = 'Send lines to terminal' })
@@ -50,14 +53,24 @@ function M.config()
       require('toggleterm').send_lines_to_terminal('visual_selection', trim_spaces, { args = vim.v.count, trim_spaces = trim_spaces })
     end, { desc = 'Send visual selection to terminal' })
 
-    vim.api.nvim_buf_set_keymap(0, 't', '<c-h>', [[<C-\><C-n><C-W>h]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<c-j>', [[<C-\><C-n><C-W>j]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<c-k>', [[<C-\><C-n><C-W>k]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<c-l>', [[<C-\><C-n><C-W>l]], opts)
+    -- Terminal navigation keymaps - fixed syntax
+    vim.keymap.set('t', '<C-h>', [[<C-\><C-n><C-w>h]], opts)
+    vim.keymap.set('t', '<C-j>', [[<C-\><C-n><C-w>j]], opts)
+    vim.keymap.set('t', '<C-k>', [[<C-\><C-n><C-w>k]], opts)
+    vim.keymap.set('t', '<C-l>', [[<C-\><C-n><C-w>l]], opts)
+    
+    -- Window operations in terminal mode
     vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+    
+    -- Resize windows in terminal mode
+    vim.keymap.set('t', '<A-h>', [[<C-\><C-n><C-w><]], opts)
+    vim.keymap.set('t', '<A-j>', [[<C-\><C-n><C-w>-]], opts)
+    vim.keymap.set('t', '<A-k>', [[<C-\><C-n><C-w>+]], opts)
+    vim.keymap.set('t', '<A-l>', [[<C-\><C-n><C-w>>]], opts)
   end
 
-  vim.cmd 'autocmd! TermOpen term://* lua set_terminal_keymaps()'
+  -- Apply keymaps to all terminal types
+  vim.cmd 'autocmd! TermOpen * lua set_terminal_keymaps()'
 end
 
 return M

@@ -42,38 +42,8 @@ local function setup_ghostty()
     }
   end
 
-  -- Enhanced terminal keymaps for Ghostty
-  -- These replace tmux navigation functionality
-  local function setup_ghostty_keymaps()
-    -- Terminal mode keymaps
-    local term_opts = { noremap = true, silent = true }
-    
-    -- Exit terminal mode
-    vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', term_opts)
-    vim.keymap.set('t', '<C-[>', '<C-\\><C-n>', term_opts)
-    
-    -- Window navigation in terminal mode (replaces tmux navigation)
-    vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h', term_opts)
-    vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j', term_opts)
-    vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k', term_opts)
-    vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l', term_opts)
-    
-    -- Window operations in terminal mode
-    vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>', term_opts)
-    
-    -- Resize windows in terminal mode (replaces tmux resize)
-    vim.keymap.set('t', '<A-h>', '<C-\\><C-n><C-w><', term_opts)
-    vim.keymap.set('t', '<A-j>', '<C-\\><C-n><C-w>-', term_opts)
-    vim.keymap.set('t', '<A-k>', '<C-\\><C-n><C-w>+', term_opts)
-    vim.keymap.set('t', '<A-l>', '<C-\\><C-n><C-w>>', term_opts)
-  end
-
-  -- Apply keymaps when terminal opens
-  vim.api.nvim_create_autocmd('TermOpen', {
-    pattern = 'term://*',
-    callback = setup_ghostty_keymaps,
-    desc = 'Setup Ghostty terminal keymaps',
-  })
+  -- Ghostty-specific terminal configuration
+  -- Terminal navigation keymaps are handled by toggleterm.lua to avoid conflicts
 
   -- Additional Ghostty-specific configurations
   -- Enable better terminal integration
