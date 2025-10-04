@@ -68,16 +68,37 @@ local function navigate_last_active()
   end
 end
 
--- Prefer direct window commands in normal mode for reliability
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Navigate left', noremap = true, silent = true })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Navigate down', noremap = true, silent = true })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Navigate up', noremap = true, silent = true })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Navigate right', noremap = true, silent = true })
+-- Window navigation keymaps - ensure they work reliably
+-- Use <C-w> commands directly for maximum compatibility
+-- Using Ctrl+Shift+jklh for navigation (primary mappings)
+vim.keymap.set('n', '<C-S-j>', '<C-w>j', { desc = 'Navigate down (Ctrl+Shift+J)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-S-k>', '<C-w>k', { desc = 'Navigate up (Ctrl+Shift+K)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-S-l>', '<C-w>l', { desc = 'Navigate right (Ctrl+Shift+L)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-S-h>', '<C-w>h', { desc = 'Navigate left (Ctrl+Shift+H)', noremap = true, silent = true })
 
-vim.keymap.set('t', '<C-h>', [[<C-\><C-n><C-w>h]], { desc = 'Navigate left from terminal', noremap = true, silent = true })
-vim.keymap.set('t', '<C-j>', [[<C-\><C-n><C-w>j]], { desc = 'Navigate down from terminal', noremap = true, silent = true })
-vim.keymap.set('t', '<C-k>', [[<C-\><C-n><C-w>k]], { desc = 'Navigate up from terminal', noremap = true, silent = true })
-vim.keymap.set('t', '<C-l>', [[<C-\><C-n><C-w>l]], { desc = 'Navigate right from terminal', noremap = true, silent = true })
+-- Alternative key codes for better terminal compatibility
+-- Note: <C-h/j/k/l> keymaps removed to avoid conflicts with smart-splits plugin
+
+
+-- Alternative navigation using vim.cmd for better compatibility
+vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Navigate left (alternative)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-Down>', '<C-w>j', { desc = 'Navigate down (alternative)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-Up>', '<C-w>k', { desc = 'Navigate up (alternative)', noremap = true, silent = true })
+vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Navigate right (alternative)', noremap = true, silent = true })
+
+
+-- Additional fallback keybindings for terminal emulator compatibility
+-- Some terminals might not send Ctrl+hjkl properly
+-- Note: <leader>hjkl keymaps removed to avoid conflicts with smart-splits plugin
+
+-- Terminal mode navigation - primary mappings (Ctrl+Shift+jklh)
+vim.keymap.set('t', '<C-S-h>', [[<C-\><C-n><C-w>h]], { desc = 'Navigate left from terminal (Ctrl+Shift+H)', noremap = true, silent = true })
+vim.keymap.set('t', '<C-S-j>', [[<C-\><C-n><C-w>j]], { desc = 'Navigate down from terminal (Ctrl+Shift+J)', noremap = true, silent = true })
+vim.keymap.set('t', '<C-S-k>', [[<C-\><C-n><C-w>k]], { desc = 'Navigate up from terminal (Ctrl+Shift+K)', noremap = true, silent = true })
+vim.keymap.set('t', '<C-S-l>', [[<C-\><C-n><C-w>l]], { desc = 'Navigate right from terminal (Ctrl+Shift+L)', noremap = true, silent = true })
+
+-- Alternative syntax for terminal mode (Ctrl+jklh)
+-- Note: <C-h/j/k/l> terminal keymaps removed to avoid conflicts with smart-splits plugin
 
 -- Navigate to last active window (similar to tmux's last-pane functionality)
 vim.keymap.set('n', '<C-\\>', navigate_last_active, {
@@ -100,6 +121,33 @@ vim.api.nvim_create_autocmd('WinEnter', {
     last_active_window = vim.api.nvim_get_current_win()
   end,
 })
+
+-- Debug function to verify keybindings are working
+-- Call with :lua verify_navigation_keys()
+function _G.verify_navigation_keys()
+  print("Verifying navigation keybindings...")
+  local mappings = {
+    '<C-S-j>', '<C-S-k>', '<C-S-l>', '<C-S-h>',  -- Primary Ctrl+Shift mappings
+    '<C-Left>', '<C-Down>', '<C-Up>', '<C-Right>' -- Arrow key alternatives
+  }
+  
+  for _, key in ipairs(mappings) do
+    local ok, result = pcall(vim.api.nvim_get_keymap, 'n')
+    if ok then
+      local found = false
+      for _, map in ipairs(result) do
+        if map.lhs == key then
+          print(string.format("✓ %s -> %s", key, map.rhs))
+          found = true
+          break
+        end
+      end
+      if not found then
+        print(string.format("✗ %s not found", key))
+      end
+    end
+  end
+end
 
 -- Window resizing keymaps (Alt + hjkl)
 vim.keymap.set('n', '<A-h>', '<C-w><', { desc = 'Resize window left', noremap = true, silent = true })
