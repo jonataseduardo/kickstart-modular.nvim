@@ -111,7 +111,7 @@ return {
           --    See `:help CursorHold` for information about when this is executed
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          local client = vim.lsp.get_clients({ id = event.data.client_id })[1]
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -173,17 +173,42 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local function get_python_path()
+      local function get_python_path(check_venv)
+        -- Helper to check if a Python executable has pip
+        local function has_pip(python_path)
+          if not python_path or python_path == '' then
+            return false
+          end
+          local handle = io.popen(python_path .. ' -m pip --version 2>&1')
+          if handle then
+            local result = handle:read '*a'
+            handle:close()
+            return not result:match 'No module named pip'
+          end
+          return false
+        end
+
         -- First check for VIRTUAL_ENV (Python venv)
         local venv = os.getenv 'VIRTUAL_ENV'
         if venv then
-          return venv .. '/bin/python'
+          local venv_python = venv .. '/bin/python'
+          -- Check if the venv python exists and is executable
+          if vim.fn.executable(venv_python) == 1 then
+            -- If we need pip (for Mason), check if venv has it
+            if check_venv == false or has_pip(venv_python) then
+              return venv_python
+            end
+          end
+          -- Venv exists but doesn't have pip or is not executable, will fall back to system Python
         end
 
         -- Then check for CONDA_PREFIX (active Conda environment)
         local conda = os.getenv 'CONDA_PREFIX'
         if conda then
-          return conda .. '/bin/python'
+          local conda_python = conda .. '/bin/python'
+          if vim.fn.executable(conda_python) == 1 and (check_venv == false or has_pip(conda_python)) then
+            return conda_python
+          end
         end
 
         -- Fallback to system Python
@@ -194,13 +219,23 @@ return {
         -- clangd = {},
         -- gopls = {},
         pyright = {
-
+          before_init = function(_, config)
+            -- For LSP, always use venv if available (don't check for pip)
+            config.settings.python.pythonPath = get_python_path(false)
+          end,
           settings = {
             python = {
-              pythonPath = get_python_path(),
+              -- For LSP, always use venv if available (don't check for pip)
+              pythonPath = get_python_path(false),
+              -- Enable better package detection
+              analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                autoImportCompletions = true,
+                -- typeCheckingMode = 'basic',
+              },
             },
           },
-          --on_attach = on_attach, -- If you have an on_attach function
         },
         bashls = {},
         -- inteliphense = {},
@@ -236,7 +271,20 @@ return {
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
+
+      -- Temporarily unset VIRTUAL_ENV for Mason to use system Python with pip
+      -- This prevents Mason from trying to use venv Python (which may not have pip)
+      -- LSP servers will still use the venv Python via our get_python_path() function
+      local saved_venv = vim.env.VIRTUAL_ENV
+      local saved_conda = vim.env.CONDA_PREFIX
+      vim.env.VIRTUAL_ENV = nil
+      vim.env.CONDA_PREFIX = nil
+
       require('mason').setup()
+
+      -- Restore the environment variables after Mason setup
+      vim.env.VIRTUAL_ENV = saved_venv
+      vim.env.CONDA_PREFIX = saved_conda
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -247,6 +295,8 @@ return {
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        ensure_installed = vim.tbl_keys(servers or {}),
+        automatic_installation = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
