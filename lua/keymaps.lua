@@ -36,23 +36,23 @@ local last_active_window = nil
 local function navigate_window(direction)
   local current_window = vim.api.nvim_get_current_win()
   local current_buf = vim.api.nvim_win_get_buf(current_window)
-  
+
   -- Check if we're in a terminal buffer
   local is_terminal = vim.bo[current_buf].buftype == 'terminal'
-  
+
   if is_terminal then
     -- In terminal mode, exit terminal mode first, then navigate
-    vim.cmd('stopinsert')
+    vim.cmd 'stopinsert'
   end
-  
+
   -- Store current window as last active before navigating
   last_active_window = current_window
-  
+
   -- Navigate to the window in the specified direction
   local success = pcall(function()
     vim.cmd('wincmd ' .. direction)
   end)
-  
+
   -- If navigation failed (no window in that direction), show a message
   if not success then
     vim.notify('No window in ' .. direction .. ' direction', vim.log.levels.INFO)
@@ -80,18 +80,18 @@ vim.keymap.set('t', '<C-k>', [[<C-\><C-n><C-w>k]], { desc = 'Navigate up from te
 vim.keymap.set('t', '<C-l>', [[<C-\><C-n><C-w>l]], { desc = 'Navigate right from terminal', noremap = true, silent = true })
 
 -- Navigate to last active window (similar to tmux's last-pane functionality)
-vim.keymap.set('n', '<C-\\>', navigate_last_active, { 
+vim.keymap.set('n', '<C-\\>', navigate_last_active, {
   desc = 'Navigate to last active window',
   noremap = true,
-  silent = true
+  silent = true,
 })
 vim.keymap.set('t', '<C-\\>', function()
-  vim.cmd('stopinsert')
+  vim.cmd 'stopinsert'
   navigate_last_active()
-end, { 
+end, {
   desc = 'Navigate to last active window from terminal',
   noremap = true,
-  silent = true
+  silent = true,
 })
 
 -- Track window changes to maintain last active window
@@ -109,23 +109,23 @@ vim.keymap.set('n', '<A-l>', '<C-w>>', { desc = 'Resize window right', noremap =
 
 -- Terminal mode window resizing
 vim.keymap.set('t', '<A-h>', function()
-  vim.cmd('stopinsert')
-  vim.cmd('wincmd <')
+  vim.cmd 'stopinsert'
+  vim.cmd 'wincmd <'
 end, { desc = 'Resize window left from terminal', noremap = true, silent = true })
 
 vim.keymap.set('t', '<A-j>', function()
-  vim.cmd('stopinsert')
-  vim.cmd('wincmd -')
+  vim.cmd 'stopinsert'
+  vim.cmd 'wincmd -'
 end, { desc = 'Resize window down from terminal', noremap = true, silent = true })
 
 vim.keymap.set('t', '<A-k>', function()
-  vim.cmd('stopinsert')
-  vim.cmd('wincmd +')
+  vim.cmd 'stopinsert'
+  vim.cmd 'wincmd +'
 end, { desc = 'Resize window up from terminal', noremap = true, silent = true })
 
 vim.keymap.set('t', '<A-l>', function()
-  vim.cmd('stopinsert')
-  vim.cmd('wincmd >')
+  vim.cmd 'stopinsert'
+  vim.cmd 'wincmd >'
 end, { desc = 'Resize window right from terminal', noremap = true, silent = true })
 
 -- Ghostty terminal specific keymaps

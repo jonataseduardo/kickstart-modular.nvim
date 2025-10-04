@@ -58,3 +58,7 @@ end
 
 -- Initialize Ghostty configuration
 setup_ghostty()
+
+-- Return empty table since this is configuration-only
+return {}
+-- vim: ts=2 sts=2 sw=2 et
