@@ -7,16 +7,16 @@ function M.config()
   require('toggleterm').setup {
     size = 20,
     open_mapping = [[<c-\>]],
-    hide_numbers = true, -- hide the number column in toggleterm buffers
+    hide_numbers = true,
     shade_filetypes = {},
     shade_terminals = true,
-    shading_factor = 2, -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
+    shading_factor = 2,
     start_in_insert = true,
-    insert_mappings = true, -- whether or not the open mapping applies in insert mode
+    insert_mappings = true,
     persist_size = false,
-    direction = "horizontal", -- Better for Ghostty integration
-    close_on_exit = true, -- close the terminal window when the process exits
-    shell = vim.env.SHELL or '/bin/zsh', -- Use system shell for Ghostty compatibility
+    direction = 'horizontal',
+    close_on_exit = true,
+    shell = vim.env.SHELL or '/bin/zsh',
     float_opts = {
       border = 'rounded',
       winblend = 0,
@@ -25,18 +25,12 @@ function M.config()
         background = 'Normal',
       },
     },
-    --    winbar = {
-    --      enabled = true,
-    --      name_formatter = function(term) --  term: Terminal
-    --        return term.count
-    --      end,
-    --    },
   }
 
   function _G.set_terminal_keymaps()
     local opts = { noremap = true, silent = true }
     local trim_spaces = false
-    
+
     -- Exit terminal mode
     vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
 
@@ -53,20 +47,8 @@ function M.config()
       require('toggleterm').send_lines_to_terminal('visual_selection', trim_spaces, { args = vim.v.count, trim_spaces = trim_spaces })
     end, { desc = 'Send visual selection to terminal' })
 
-    -- Terminal navigation keymaps - fixed syntax
-    vim.keymap.set('t', '<C-h>', [[<C-\><C-n><C-w>h]], opts)
-    vim.keymap.set('t', '<C-j>', [[<C-\><C-n><C-w>j]], opts)
-    vim.keymap.set('t', '<C-k>', [[<C-\><C-n><C-w>k]], opts)
-    vim.keymap.set('t', '<C-l>', [[<C-\><C-n><C-w>l]], opts)
-    
-    -- Window operations in terminal mode
+    -- Window operations in terminal mode (basic functionality)
     vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
-    
-    -- Resize windows in terminal mode
-    vim.keymap.set('t', '<A-h>', [[<C-\><C-n><C-w><]], opts)
-    vim.keymap.set('t', '<A-j>', [[<C-\><C-n><C-w>-]], opts)
-    vim.keymap.set('t', '<A-k>', [[<C-\><C-n><C-w>+]], opts)
-    vim.keymap.set('t', '<A-l>', [[<C-\><C-n><C-w>>]], opts)
   end
 
   -- Apply keymaps to all terminal types
