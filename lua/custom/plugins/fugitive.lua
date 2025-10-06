@@ -4,6 +4,7 @@ return {
     event = 'VeryLazy',
     keys = {
       { '<leader>gs', '<cmd>Git<cr>', desc = 'Git status' },
+      { '<leader>ga', '<cmd>w<cr><cmd>Git add %<cr>', desc = 'Save and git add current file' },
       { '<leader>gc', '<cmd>Git commit<cr>', desc = 'Git commit' },
       { '<leader>gp', '<cmd>Git push<cr>', desc = 'Git push' },
       { '<leader>gl', '<cmd>Git pull<cr>', desc = 'Git pull' },
